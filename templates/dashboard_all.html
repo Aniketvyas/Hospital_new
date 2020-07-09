@@ -1,0 +1,853 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard Area | Hospital</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">
+     <!-- <link href="{% static 'css/style.css' %}" rel="stylesheet">-->
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">HOME</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+         
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Welcome, {{ user.first_name }}</a></li>
+            <li><a href="/accounts/logout">Logout</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    {% if patients %}
+    <header id="header">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10">
+            <h1><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Patients </h1>
+          </div>
+          <div class="col-md-2">
+            <div class="dropdown create">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Main Features
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="/book"> Book Appointment</a></li>
+                <li><a href="#"> Previous Appointments</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="breadcrumb">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="/patient">Dashboard</a></li>
+          <li class="active">{{ user.first_name }}</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="list-group">
+              <a href="index.html" class="list-group-item active main-color-bg">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Dashboard
+              </a>
+               <a href="PreviousLabReports" class="list-group-item"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Previous Lab Reports <span class="badge">203</span></a>
+             
+            </div>
+           
+          </div>
+          <div class="col-md-9">
+            <div class="panel panel-default">
+              <div class="panel-heading main-color-bg">
+                <h3 class="panel-title">Appointments</h3>
+              </div>
+
+          
+                <br>
+                <h3 style="margin-left:10px;"><b>Previous Appointment</b></h3>
+                <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Docotr ID</th>
+                        <th>Created Date</th>
+                        <th>Status</th>
+                        <th>Prescription</th>
+                      </tr>
+                      {% for app in appointment %}
+                      <tr>
+                        <td>{{ app.slot_date }}</td>
+                        <td>{{ app.slot_time }}</td>
+                        <td>{{ app.doctor_id.name}}</td>
+                        <td>{{ app.created_at }}</td>
+                        <td>{{ app.status}}</td>
+                        <td><a class="btn btn-primary btn-sm" href="/prescription/{{app.patient_appointment_id}}">view prescription</a></td>
+                      </tr>
+                      {% endfor %}
+                     
+                    </table>
+              </div>
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    
+    {% if doctors %}
+    <header id="header">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10">
+            <h1><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Doctors </h1>
+          </div>
+          <div class="col-md-2">
+            <div class="dropdown create">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Main Features
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="nextall"> Next all appointment</a></li>
+                <li><a href="previousall"> Previous all Appointments</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+
+    <section id="main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="list-group">
+              <a href="index.html" class="list-group-item active main-color-bg">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Dashboard
+              </a>
+             </div>
+
+           
+          </div>
+          <div class="col-md-9">
+            <!-- Website Overview -->
+            <div class="panel panel-default">
+              <div class="panel-heading main-color-bg">
+                <h3 class="panel-title">Appointment Overview</h3>
+              </div>
+              <div class="panel-body">
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{count}}</h2>
+                    <h4>Appointment today</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> {{done}}</h2>
+                    <h4>appointment Done</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> {{pending}}</h2>
+                    <h4>Pending appointments</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> {{total}}</h2>
+                    <h4>Total Appointments done</h4>
+                  </div>
+                </div>
+              </div>
+              </div>
+              {% if apps %}
+              <!-- Pending Appointments -->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Pending Appointment</h3>
+                </div>
+                
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>Patient Name</th>
+                        <th>Patient Email</th>
+                        <th>Patient Appointment Id</th>
+                        <th>Patient Age</th>
+                        <th>Patient Gender</th>
+                    
+                        <th>Slot date</th>
+                        <th>Slot time</th>
+                        <th>Action</th>
+                      </tr>
+                      <tr>
+                        {% for app in apps %}
+                        <td>{{app.patient_name}}</td>
+                        <td>{{app.patient_email.patient_id}}</td>
+                        <td>{{app.patient_appointment_id}}</td>
+                        <td>{{app.patient_age}}</td>
+                        <td>{{app.patient_gender}}</td>
+                    
+                        <td>{{app.slot_date}}</td>
+                        <td>{{app.slot_time}}</td>
+                        <td><a class="btn btn-primary btn-sm" href="/appointment_view/{{app.patient_appointment_id}}">view Appointmnt</a></td>
+                      
+                      </tr>
+                      {% endfor %}
+                      
+                    </table>
+                </div>
+                {% else %}
+                {% if apps %}
+                <h1>No appointments for today</h1>
+                {% endif %}
+              </div>
+              {% endif %}
+
+
+              {% if nextall %}
+              <!--Completed Appointment information-->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title text-center">Next Appointment</h3>
+                </div>
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>Patient Name</th>
+                        <th>Patient Email</th>
+                        <th>Doctor Name</th>
+                        <th>Patient Age</th>
+                        <th>Patient Gender</th>
+                        <th>Slot date</th>
+                        <th>Slot time</th>
+                      </tr>
+                      <tr>
+                        {% for app in completed %}
+                        <td>{{app.patient_name}}</td>
+                        <td>{{app.patient_email.patient_id}}</td>
+                        <td>{{app.doctor_id.name}}</td>
+                        <td>{{app.patient_age}}</td>
+                        <td>{{app.patient_gender}}</td>
+                        <td>{{app.slot_date}}</td>
+                        <td>{{app.slot_time}}</td>
+                      </tr>
+                      {% endfor %}
+                     
+                      </tr>
+                    </table>
+                </div>
+              </div>
+              {% endif %}
+
+
+
+
+              {% if previousall %}
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h2 class="panel-title text-center"><b>Previous Appointment</b></h2>
+                </div>
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>Patient Name</th>
+                        <th>Patient Email</th>
+                        <th>Doctor Name</th>
+                        <th>Patient Age</th>
+                        <th>Patient Gender</th>
+                        <th>Slot date</th>
+                        <th>Slot time</th>
+                        <th>Prescription</th>
+                      </tr>
+                      <tr>
+                        {% for app in completed %}
+                        <td>{{app.patient_name}}</td>
+                        <td>{{app.patient_email.patient_id}}</td>
+                        <td>{{app.doctor_id.name}}</td>
+                        <td>{{app.patient_age}}</td>
+                        <td>{{app.patient_gender}}</td>
+                        <td>{{app.slot_date}}</td>
+                        <td>{{app.slot_time}}</td>
+                        <td><a href="prescription/{{app.patient_appointment_id}}">
+                          <button type="button" class="btn btn-primary">Prescription</button></a></td>
+                      </tr>
+                      {% endfor %}
+                     
+                      </tr>
+                    </table>
+                </div>
+              </div>
+              {% endif %}
+
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+ 
+
+    {% if receptionist %}
+    <header id="header">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <h1><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Receptionist | Dashboard</h1>
+          </div>
+          <div class="col-md-2">
+            {% for i in messages %}
+            {{i}}
+            {% endfor %}
+          </div>
+          <div class="col-md-2">
+            <div class="dropdown create">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Add Appointment
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a type="button" href="/book">Add Appointment</a></li>
+                <li><a type="button" class="btn " data-toggle="modal" data-target="#patientRegister">Add Patient</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+
+
+    <section id="main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="list-group">
+              <a href="index.html" class="list-group-item active main-color-bg">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Dashboard
+              </a>
+              <a href="pages.html" class="list-group-item"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Doctors <span class="badge">12</span></a>
+              <a href="posts.html" class="list-group-item"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Canceled appointment <span class="badge">33</span></a>
+              <a href="users.html" class="list-group-item"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Users <span class="badge">203</span></a>
+            </div>
+
+         
+          </div>
+          <div class="col-md-9">
+            <!-- Website Overview -->
+            <div class="panel panel-default">
+              <div class="panel-heading main-color-bg">
+                <h3 class="panel-title">Appointment Overview</h3>
+              </div>
+              <div class="panel-body">
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{count}}</h2>
+                    <h4>Appointment today</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> {{don}}</h2>
+                    <h4>appointment Done</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> {{total}}</h2>
+                    <h4>total appointments</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> {{pendings}}</h2>
+                    <h4>pending appointments</h4>
+                  </div>
+                </div>
+              </div>
+              </div>
+
+              <!-- Latest Users -->
+              {% if pending %}
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Today's Pending Appointment</h3>
+                </div>
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>Patient Id</th>
+                        <th>Patient Name</th>
+                        <th>Patient Email</th>
+                        <th>Doctor name</th>
+                        <th>Patient Age</th>
+                        <th>Patient Gender</th>
+                        <th>Slot date</th>
+                        <th>Slot time</th>
+                        <th>Action</th>
+                      </tr>
+                      <tr>
+                        {% for app in pending %}
+                        <td>{{app.patient_appointment_id}}</td>
+                        <td>{{app.patient_name}}</td>
+                        <td>{{app.patient_email.patient_id}}</td>
+                        <td>{{app.doctor_id.name}}</td>
+                        <td>{{app.patient_age}}</td>
+                        <td>{{app.patient_gender}}</td>
+                        <td>{{app.slot_date}}</td>
+                        <td>{{app.slot_time}}</td>
+                        <td>
+                          <a href="{{app.patient_appointment_id}}/update" data-toggle="modal" data-target="#addPage"> <button type="button" class="btn btn-primary btn-sm" >Update</button>
+                            <a href="{{app.patient_appointment_id}}/delete" ><button type="button" class="btn btn-warning btn-sm">Delete</button></a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                     
+                      </tr>
+                    </table>
+                </div>
+              </div>
+              {% else %}
+              <h3 class="text-center">No pending Appointments for today</h3> <br>
+              {% endif %}
+
+
+              {% if done %}
+              <!--Appointments Done information-->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Today's viewed Appointment</h3>
+                </div>
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>Patient Name</th>
+                        <th>Patient Email</th>
+                        <th>Doctor Name</th>
+                        <th>Patient Age</th>
+                        <th>Patient Gender</th>
+                        <th>Slot date</th>
+                        <th>Slot time</th>
+                      </tr>
+                      <tr>
+                        {% for app in done %}
+                        <td>{{app.patient_name}}</td>
+                        <td>{{app.patient_email.patient_id}}</td>
+                        <td>{{app.doctor_id.name}}</td>
+                        <td>{{app.patient_age}}</td>
+                        <td>{{app.patient_gender}}</td>
+                        <td>{{app.slot_date}}</td>
+                        <td>{{app.slot_time}}</td>
+                      </tr>
+                      {% endfor %}
+                     
+                      </tr>
+                    </table>
+                </div>
+              </div>
+              {% else %}
+              <h3 class="text-center">No appointment has been viewed</h3>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <section>
+      <div class="modal fade" id="addPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <form method='POST' action='/receptionist/update'> {% csrf_token %}
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add Page</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label>Patient ID</label>
+                  <input type="number" class="form-control" name="patient_ID"> 
+                  <label>Patient name</label>
+                  <input type="text" class="form-control" placeholder="Patient Name" name='name'>
+                  <label>Patient Email</label>
+                  <input type="text" class="form-control" placeholder="Email" name='email'>
+                  
+                  <label>Patient age</label>
+                  <input type="text" class="form-control" placeholder="age"name='age'>
+                  <label>Patient Gender</label>
+                  <input type="text" class="form-control" placeholder="gender" name='gender'>
+                  <label>Doctor name</label>
+                  <select class="form-control select" name="doc_name">
+                    {% for doc in docs %}
+                    <option value="{{doc.doctor_id}}">{{doc.name}}</option>
+                    {% endfor %}
+                  </select><br>
+                  <label>Appointment Date</label>
+                  <input type="text" class="date-picker form-control" name="date">
+                  
+                <br>
+                  <button class="btn btn-info ml-2 mb-2">Update</button>
+                </div>
+             </div>
+            </form>
+          </div>
+        </div>
+      </div>      
+    </section>
+
+
+    <section>
+      <div class="modal fade" id="patientRegister" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <form method='POST' action='/receptionist/addPatient'> {% csrf_token %}
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="patientRegister">Add Patient</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-row">
+                  <div class="form-group"><label>Patient name</label>
+                    <input type="text" class="form-control" placeholder="Patient Name" name='name'></div>
+                  <div class="form-group"><label>Patient Email</label>
+                    <input type="text" class="form-control" placeholder="Email" name='email'></div>
+                  
+                  <div class="form-group">
+                    <label>Patient password</label>
+                    <input type="password" class="form-control" placeholder="password" name="password">
+                    <label>Confirm password</label>
+                    <input type="password" class="form-control" placeholder="confirm password" name="password1">
+                  </div>
+                  <label>Patient age</label>
+                  <input type="text" class="form-control" placeholder="age"name='age'>
+                  <label>Patient Gender</label>
+                  <input type="text" class="form-control" placeholder="gender" name='gender'>
+                  <label>Patient Phone Number</label>
+                 <input type="number" class="form-control" placeholder="phone number" name="phone">
+                  <label>Appointment Date</label>
+                  <input type="text" class="date-picker form-control" name="date">
+                  <label>Total Amount</label>
+                  <input type="number" placeholder="Total Amount" class="form-control" name="total">
+                  <label>Paid Amount</label>
+                  <input type=" number" placeholder="Paid Amount" class="form-control" name='paid'>
+                  <label>Outstanding Amount</label>
+                  <input type="number" placeholder="Outstanding Amount" class="form-control" name="outstanding">
+                <br>
+                  <button class="btn btn-info ml-2 mb-2">Update</button>
+                </div>
+             </div>
+            </form>
+          </div>
+        </div>
+      </div>      
+    </section>
+
+
+
+
+
+
+
+
+
+
+    {% endif %}
+
+
+
+
+
+
+    {% if hr %}
+
+
+    <header id="header">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10">
+            <h1><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> HR </h1>
+          </div>
+          <div class="col-md-2">
+            <div class="dropdown create">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Main Features
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="finance">Accounts</a></li>
+                <li><a href="hr">Doctors</a></li>
+                
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+
+    <section id="main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="list-group">
+              <a href="index.html" class="list-group-item active main-color-bg">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Dashboard
+              </a>
+             </div>
+
+           
+          </div>
+          <div class="col-md-9">
+            <!-- Website Overview -->
+            <div class="panel panel-default">
+              <div class="panel-heading main-color-bg">
+                <h3 class="panel-title">Overview</h3>
+              </div>
+              <div class="panel-body">
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{count}}</h2>
+                    <h4>Total Doctors</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> {{done}}</h2>
+                    <h4>Active Doctors</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> {{pending}}</h2>
+                    <h4>In-active Doctors</h4>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="well dash-box">
+                    <h2><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> {{total}}</h2>
+                    <h4>Total patients</h4>
+                  </div>
+                </div>
+              </div>
+              </div>
+              {% if apps %}
+              <!-- Pending Appointments -->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">All Doctors</h3>
+                </div>
+                
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>Doctor Name</th>
+                        <th>Doctor Email</th>
+                        <th>Doctor Gender</th>
+                        <th>Doctor location</th>
+                        <th>Active</th>
+                        <th>Action</th>
+                        
+                      </tr>
+                      <tr>
+                        {% for app in apps %}
+                        <td>{{app.name}}</td>
+                        <td>{{app.doctor_id}}</td>
+                        <td>{{app.gender}}</td>
+                        <td>{{app.location}}</td>
+                        <td>{{app.status }}</td>
+                        <td>
+                          <a ><button class="btn btn-primary btn-sm" data-target="#lab" data-toggle="modal" aria-haspopup="true" aria-expanded="true">Update</button></a>
+                          <a href="{{app.id}}/delete"><button class="btn btn-danger btn-sm">Delete</button></a>
+                        </td>
+                        
+                        
+                      </tr>
+                      {% endfor %}
+                      
+                    </table>
+                </div>
+                {% else %}
+                {% if apps %}
+                <h1>No appointments for today</h1>
+                {% endif %}
+              </div>
+              {% endif %}
+
+
+
+
+              {% if finance %}
+              <!-- Pending Appointments -->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Individual outstanding</h3>
+                </div>
+                
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>patient Name</th>
+                        <th>Outstanding</th>
+                        <th>paid</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                                            
+                      </tr>
+                      <tr>
+                        {% for app in finance %}
+                        <td>{{app.patient_id.first_name}}  {{app.patient_id.last_name}}</td>
+                        <td>{{app.outstanding}}</td>
+                        <td>{{app.paid}}</td>
+                        <td>{{app.amount}}</td>
+                        <td>
+                          <button class="btn btn-primary btn-sm">Send Remainder</button>
+                        </td>
+                      
+                        
+                        
+                      </tr>
+                      {% endfor %}
+                      
+                    </table>
+                </div>
+                {% else %}
+                
+              </div>
+              {% endif %}
+
+
+              {% if fine %}
+              <!-- Pending Appointments -->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Consultations Outstanding</h3>
+                </div>
+                
+                <div class="panel-body">
+                  <table class="table table-responsive table-striped table-hover">
+                      <tr>
+                        <th>patient Name</th>
+                        <th>Outstanding</th>
+                        <th>paid</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Invoice</th>
+                                            
+                      </tr>
+                      <tr>
+                        {% for app in fine %}
+                        <td>{{app.pateint_id.first_name}}  {{app.patient_id.last_name}}</td>
+                        <td>{{app.outstanding}}</td>
+                        <td>{{app.paid}}</td>
+                        <td>{{app.amount}}</td>
+                        <td>{{app.updated_on}}</td>
+                        <td>
+                          <a href="media/{{app.invoice}}"><button class="btn btn-warning">View Invoice</button></a>
+                        </td>
+                      
+                        
+                        
+                      </tr>
+                      {% endfor %}
+                      
+                    </table>
+                </div>
+                {% else %}
+                
+              </div>
+              {% endif %}
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <section>
+      <div class="modal fade" id="lab" tabindex="-1" role="dialog" aria-labelledby="labe">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <form method='POST' action='/doctor/update'> {% csrf_token %}
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="labe">Update Doctor information</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label>Doctor name</label>
+                  <input type="text" class="form-control" placeholder=Name" name='name'>
+                  <label>Doctor Email</label>
+                  <input type="text" class="form-control" placeholder="Email" name='email'>
+                  
+                  <label>Doctor age</label>
+                  <input type="text" class="form-control" placeholder="age"name='age'>
+                  <label>doctor Gender</label>
+                  <input type="text" class="form-control" placeholder="gender" name='gender'>
+  
+                  <label>Active</label>
+                  <select name="status" class="form-control select">
+                    <option value="Active">Active</option>
+                    <option value="inactive">In-Active</option>
+                  </select>
+                  <button class="btn btn-info ml-2 mb-2">Update</button>
+                </div>
+             </div>
+            </form>
+          </div>
+        </div>
+      </div>      
+    </section>
+ 
+
+
+
+
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
